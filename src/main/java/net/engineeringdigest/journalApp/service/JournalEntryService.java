@@ -2,49 +2,47 @@ package net.engineeringdigest.journalApp.service;
 
 import net.engineeringdigest.journalApp.entity.JournalEntry;
 import net.engineeringdigest.journalApp.repository.JournalEntryRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class JournalEntryService {
     @Autowired
     private JournalEntryRepository journalEntryRepository;
 
-    public List<JournalEntry> getAllJournals(){
+    public List<JournalEntry> getAllJournals() {
         return journalEntryRepository.findAll();
     }
 
-    public Optional<JournalEntry> getJournalsById(String id) {
-        if(journalEntryRepository.findById(id).isPresent()){
-            return journalEntryRepository.findById(id);
-        }
-        return Optional.empty();
+    public JournalEntry getJournalsById(ObjectId id) {
+        return journalEntryRepository.findById(id).orElse(null);
     }
 
-    public String addJournalEntry(JournalEntry newJournalEntry) {
+    public boolean addJournalEntry(JournalEntry newJournalEntry) {
+        newJournalEntry.setLocalDateTime(LocalDateTime.now());
         journalEntryRepository.save(newJournalEntry);
-        return "Successfully added";
+        return true;
     }
 
-    public boolean deleteJournalEntryById(String id){
+    public void deleteJournalEntryById(ObjectId id) {
         journalEntryRepository.deleteById(id);
-        return !getJournalsById(id).isPresent();
+        getJournalsById(id);
     }
 
-    public String updateById(String id, JournalEntry newJournalEntry){
-        Optional<JournalEntry> oldJournalEntry = getJournalsById(id);
-        if(oldJournalEntry.isPresent()){
+    public Boolean updateById(ObjectId id, JournalEntry newJournalEntry) {
+        JournalEntry oldJournalEntry = getJournalsById(id);
+        if (oldJournalEntry != null) {
             JournalEntry journalEntry = new JournalEntry();
             journalEntry.setId(id);
             journalEntry.setTitle(newJournalEntry.getTitle());
             journalEntry.setContent(newJournalEntry.getContent());
             journalEntryRepository.save(journalEntry);
-            return "Successfully updated with id: "+id;
+            return true;
         }
-        return "No record found for the id: "+id;
-
+        return false;
     }
 }
