@@ -18,16 +18,20 @@ RestApisController -> Service -> Repository extends MongoRepository -> JournalEn
 
 ## using ResponseEntity
 For the invalid myId the code returns null and 200(OK) status code
-`@GetMapping("/all/id/{myId}")
+```
+@GetMapping("/all/id/{myId}")
     public JournalEntry getJournalById(@PathVariable ObjectId myId){
         return journalEntryService.getJournalsById(myId).orElse(null);
-    }`
+    }
+```
 To override the response status code, headers and body we use ResponseEntity
-`@GetMapping("/all/id/{myId}")
+```
+@GetMapping("/all/id/{myId}")
     public ResponseEntity<JournalEntry> getJournalById(@PathVariable ObjectId myId) {
         if (journalEntryService.getJournalsById(myId) != null) {
             return new ResponseEntity<>(journalEntryService.getJournalsById(myId), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }`
+    }
+```
 
