@@ -1,48 +1,44 @@
 package net.engineeringdigest.journalApp.controller;
 
 import net.engineeringdigest.journalApp.entity.JournalEntry;
+import net.engineeringdigest.journalApp.service.JournalEntryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
-@RequestMapping("/journal")
+@RequestMapping("/api/journal")
 public class JournalEntryController {
 
     @Autowired
     private JournalEntry journalEntry;
 
-    private Map<Long, JournalEntry> map = new HashMap<>();
+    @Autowired
+    private JournalEntryService journalEntryService;
 
     @GetMapping("/all")
     public List<JournalEntry> getAllJournals(){
-        return new ArrayList<>(map.values());
+        return journalEntryService.getAllJournals();
     }
 
-    @PostMapping
+    @PostMapping("/all")
     public String addJournalEntry(@RequestBody JournalEntry newJournalEntry){
-        map.put(newJournalEntry.getId(), newJournalEntry);
-        return "Successfully added";
+        return journalEntryService.addJournalEntry(newJournalEntry);
     }
 
-    @GetMapping("id/{myId}")
-    public JournalEntry getJournalById(@PathVariable Long myId){
-        return map.getOrDefault(myId, null);
+    @GetMapping("/all/id/{myId}")
+    public Optional<JournalEntry> getJournalById(@PathVariable String myId){
+        return journalEntryService.getJournalsById(myId);
     }
 
     @DeleteMapping("id/{myId}")
-    public boolean deleteJournalById(@PathVariable Long myId){
-        map.remove(myId);
-        return map.get(myId)==null;
+    public boolean deleteJournalById(@PathVariable String myId){
+        return journalEntryService.deleteJournalEntryById(myId);
     }
 
     @PutMapping("id/{myId}")
-    public String updateJournalById(@PathVariable Long myId, @RequestBody JournalEntry newJournalEntry){
-        map.put(myId, newJournalEntry);
-        return "Success";
+    public String updateJournalById(@PathVariable String myId, @RequestBody JournalEntry newJournalEntry){
+        return journalEntryService.updateById(myId, newJournalEntry);
     }
 }
