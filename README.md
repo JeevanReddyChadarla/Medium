@@ -35,3 +35,8 @@ To override the response status code, headers and body we use ResponseEntity
     }
 ```
 
+## Build the relation between user and journals
+users has a relation with journals
+
+```@DBRef``` to automatically store journals in users
+
