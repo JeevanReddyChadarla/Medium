@@ -6,6 +6,7 @@ import net.engineeringdigest.journalApp.repository.JournalEntryRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +28,7 @@ public class JournalEntryService {
         return journalEntryRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public boolean addJournalEntry(JournalEntry newJournalEntry, String userName) {
         User user = userService.getUserByUserName(userName);
         newJournalEntry.setLocalDateTime(LocalDateTime.now());
@@ -36,6 +38,7 @@ public class JournalEntryService {
         return true;
     }
 
+    @Transactional
     public boolean deleteJournalEntryById(String userName, ObjectId id) {
         User user = userService.getUserByUserName(userName);
         JournalEntry journalById = journalEntryRepository.findById(id).orElse(null);
@@ -49,6 +52,7 @@ public class JournalEntryService {
         }
     }
 
+    @Transactional
     public Boolean updateById(String userName, ObjectId id, JournalEntry newJournalEntry) {
         User user = userService.getUserByUserName(userName);
         if(user!=null) {

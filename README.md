@@ -40,3 +40,10 @@ users has a relation with journals
 
 ```@DBRef``` to automatically store journals in users
 
+## @Transactional - @EnableTransactionalManager - Bean creation for the implementation
+The journal class should point to any one of the users.
+So we have added `journal.save(newJournal)` and `user.save(newJournal)`
+If `journal.save(newJournal)` is success and `user.save(newJournal)` is NOT success 
+Then journals without user exists (which is incorrect).
+To avoid this we use @Transaction to save.
+and @EnableTransactionalManager to enable it.
